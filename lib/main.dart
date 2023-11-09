@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:glowventory/menu.dart';
+import 'package:glowventory/screens/menu.dart';
 
 void main() {
   runApp(const MyApp());
