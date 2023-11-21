@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-// TODO: Impor drawer yang sudah dibuat sebelumnya
+import 'package:glowventory/screens/menu.dart';
 import 'package:glowventory/widgets/left_drawer.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
 
 class ShopFormPage extends StatefulWidget {
     const ShopFormPage({super.key});
@@ -14,16 +18,18 @@ class _ShopFormPageState extends State<ShopFormPage> {
       String _name = "";
       int _amount = 0;
       String _description = "";
-      int _harga = 0;
+      int _price = 0;
       String _category = "";
 
     @override
     Widget build(BuildContext context) {
+      final request = context.watch<CookieRequest>();
+      
         return Scaffold(
         appBar: AppBar(
           title: const Center(
             child: Text(
-              'Form Tambah Produk',
+              'Form Tambah Item',
             ),
           ),
           backgroundColor: Colors.indigo,
@@ -41,8 +47,8 @@ class _ShopFormPageState extends State<ShopFormPage> {
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
                     decoration: InputDecoration(
-                      hintText: "Nama Produk",
-                      labelText: "Nama Produk",
+                      hintText: "Nama Item",
+                      labelText: "Nama Item",
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5.0),
                       ),
@@ -102,15 +108,15 @@ class _ShopFormPageState extends State<ShopFormPage> {
                     onChanged: (String? value) {
                       setState(() {
                         // TODO: Tambahkan variabel yang sesuai
-                        _harga = int.parse(value!);
+                        _price = int.parse(value!);
                       });
                     },
                     validator: (String? value) {
                       if (value == null || value.isEmpty) {
-                        return "Harga tidak boleh kosong!";
+                        return "price tidak boleh kosong!";
                       }
                       if (int.tryParse(value) == null) {
-                        return "Harga harus berupa angka!";
+                        return "price harus berupa angka!";
                       }
                       return null;
                     },
@@ -176,40 +182,38 @@ class _ShopFormPageState extends State<ShopFormPage> {
                         backgroundColor:
                             MaterialStateProperty.all(Colors.indigo),
                       ),
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                title: const Text('Produk berhasil tersimpan'),
-                                content: SingleChildScrollView(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text('Nama: $_name'),
-                                      Text('Amount: $_amount'),
-                                      Text('Price: $_harga'),
-                                      Text('Description: $_description'),
-                                      Text('Category: $_category')
-                                    ],
-                                  ),
-                                ),
-                                actions: [
-                                  TextButton(
-                                    child: const Text('OK'),
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        }
-                        _formKey.currentState!.reset();
-                      },
+                      onPressed: () async {
+                            if (_formKey.currentState!.validate()) {
+                                // Kirim ke Django dan tunggu respons
+                                // TODO: Ganti URL dan jangan lupa tambahkan trailing slash (/) di akhir URL!
+                                final response = await request.postJson(
+                                "http://127.0.0.1:8000/create-flutter/",
+                                jsonEncode(<String, String>{
+                                    'name': _name,
+                                    'amount': _amount.toString(),
+                                    'price': _price.toString(),
+                                    'description': _description,
+                                    'category': _category,
+                                    // TODO: Sesuaikan field data sesuai dengan aplikasimu
+                                }));
+                                if (response['status'] == 'success') {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(const SnackBar(
+                                    content: Text("Produk baru berhasil disimpan!"),
+                                    ));
+                                    Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => MyHomePage()),
+                                    );
+                                } else {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(const SnackBar(
+                                        content:
+                                            Text("Terdapat kesalahan, silakan coba lagi."),
+                                    ));
+                                }
+                            }
+                        },
                       child: const Text(
                         "Save",
                         style: TextStyle(color: Colors.white),

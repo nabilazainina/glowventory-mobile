@@ -296,6 +296,128 @@ Pada implementasi checklist ini, saya membuat sebuah file ```left_drawer.dart```
   ),
 ```
 
+#
+# TUGAS 9
+#
+
+## Apakah bisa kita melakukan pengambilan data JSON tanpa membuat model terlebih dahulu? Jika iya, apakah hal tersebut lebih baik daripada membuat model sebelum melakukan pengambilan data JSON?
+
+Ya, bisa dilakukan dengan menggunakan ```Map<String, dynamic>``` untuk menangani data JSON secara langsung. Pengambilan data JSON tanpa model memberika fleksibilitas karena developer tidak perlu mendefinisikan struktur data terlebih dahulu. Hal ini berguna untuk prototyping cepat atau ketika berinteraksi dengan API yang sering berubah. Developer juga tidak perlu menulis kode tambahan untuk serialisasi dan deserialisasi data, yang bisa menghemat waktu pengembangan. 
+
+Akan tetapi, jika dibandingkan dengan pembuatan model, membuat model kelas untuk JSON lebih membantu dalam menjaga kode menjadi lebih terorganisir dan mudah dibaca. Selain itu, pembuatan model membuat kode lebih mudah diperbarui. Oleh karena itu, penggunaan tanpa model lebih cocok untuk skenario ketika struktur data tidak tetap.
+
+## Jelaskan fungsi dari CookieRequest dan jelaskan mengapa instance CookieRequest perlu untuk dibagikan ke semua komponen di aplikasi Flutter.
+
+Fungsi utama dari `CookieRequest` adalah untuk menyimpan dan mengatur informasi sesi pengguna, termasuk hal-hal seperti token autentikasi dan preferensi pengguna. Ini sangat krusial untuk aplikasi yang memerlukan pemeliharaan sesi pengguna, seperti dalam fitur login pada aplikasi dekappy ini.
+
+Alasan mengapa instance `CookieRequest` harus tersedia di seluruh komponen aplikasi adalah untuk memastikan konsistensi sesi pengguna di seluruh bagian aplikasi. Dengan cara ini, setiap bagian dari aplikasi dapat mengakses dan menggunakan informasi sesi yang sama. Sebagai contoh, ketika pengguna sudah melakukan login, cookie yang berisi token autentikasi harus bisa diakses oleh semua komponen yang membutuhkan verifikasi autentikasi. Hal ini memungkinkan pengguna untuk tidak perlu login berulang kali ketika mereka berpindah antar fitur dalam aplikasi.
+
+## Jelaskan mekanisme pengambilan data dari JSON hingga dapat ditampilkan pada Flutter
+
+Mekanisme pengambilan data dari JSON hingga dapat ditampilkan pada aplikasi Flutter melibatkan beberapa langkah utama. Berikut adalah uraian dari proses tersebut:
+
+1. **Membuat Permintaan HTTP**
+
+Pertama, aplikasi Flutter perlu mengirim permintaan HTTP ke server atau API yang menyediakan data dalam format JSON. Ini biasanya dilakukan menggunakan paket seperti http yang tersedia di Flutter. Dapat dilihat melalui contoh kode saya, yaitu
+
+```
+Future<List<Item>> fetchItem() async {
+    var url = Uri.parse(
+        'http://127.0.0.1:8000/json/');
+    var response = await http.get(
+        url,
+        headers: {"Content-Type": "application/json"},
+    );
+}
+```
+
+2. **Mendekode Respons JSON**
+
+Setelah menerima respons dari server, data JSON perlu didekode menjadi format yang dapat dipahami oleh Dart. Ini biasanya dilakukan dengan menggunakan fungsi jsonDecode dari library dart:convert.
+
+3. **Mengonversi JSON ke Model (Opsional)**
+
+Jika developer menggunakan model data khusus, langkah selanjutnya adalah mengonversi data JSON yang telah didekode menjadi objek model. Ini membantu dalam memanipulasi data lebih lanjut dan membuat kode lebih terstruktur. Contohnya pada kode saya adalah
+
+```
+class Item {
+    String model;
+    int pk;
+    Fields fields;
+
+    Item({
+        required this.model,
+        required this.pk,
+        required this.fields,
+    });
+
+    factory Item.fromJson(Map<String, dynamic> json) => Item(
+        model: json["model"],
+        pk: json["pk"],
+        fields: Fields.fromJson(json["fields"]),
+    );
+
+        Map<String, dynamic> toJson() => {
+        "model": model,
+        "pk": pk,
+        "fields": fields.toJson(),
+    };
+}
+
+```
+
+4. **Menampilkan Data di Flutter**
+
+Setelah data siap dalam bentuk objek Dart (baik sebagai Map atau model khusus), Anda dapat menampilkannya di UI Flutter menggunakan widget. Ini sering melibatkan penggunaan FutureBuilder atau StreamBuilder untuk menangani data asinkron.
+
+## Jelaskan mekanisme autentikasi dari input data akun pada Flutter ke Django hingga selesainya proses autentikasi oleh Django dan tampilnya menu pada Flutter
+
+Mekanisme autentikasi yang menghubungkan aplikasi Flutter dengan server Django berlangsung dalam beberapa langkah terkoordinasi. Awalnya, pengguna memasukkan informasi akun mereka, seperti nama pengguna dan kata sandi, melalui UI di Flutter. Data ini kemudian dikirim ke server Django melalui permintaan HTTP POST, dengan data yang diformat sebagai JSON. Setelah menerima data ini, Django melakukan proses autentikasi dengan memverifikasi detail akun terhadap database. Jika detail tersebut valid, Django mengeluarkan token yang dikirim kembali ke aplikasi Flutter sebagai bagian dari respons.
+
+Di sisi aplikasi Flutter, respons dari Django diolah. Jika proses autentikasi sukses, token disimpan untuk sesi pengguna dan mereka diarahkan ke halaman utama atau dashboard. Hal ini memungkinkan pengguna untuk mengakses berbagai fitur aplikasi sesuai dengan level akses mereka. Di sisi lain, jika autentikasi tidak berhasil, aplikasi Flutter akan menampilkan pesan error dan meminta pengguna untuk mencoba lagi. Setelah login berhasil, pengguna dapat mengakses dan berinteraksi dengan berbagai menu dan fitur aplikasi, yang kini aman berkat proses verifikasi identitas oleh Django. Proses ini memastikan keamanan dalam pertukaran data dan menjamin bahwa hanya pengguna yang terverifikasi yang dapat mengakses fitur-fitur tertentu di dalam aplikasi.
+
+## Sebutkan seluruh widget yang kamu pakai pada tugas ini dan jelaskan fungsinya masing-masing
+
+```Scaffold```: Widget ini digunakan sebagai kerangka dasar untuk layout halaman di Flutter. Ini menyediakan struktur dasar seperti appBar, body, dan lainnya.
+
+```AppBar``: Widget ini digunakan untuk menampilkan app bar di bagian atas layar. Di dalamnya, Anda menampilkan judul halaman yang diambil dari data item.
+
+```Form``: Widget ini digunakan untuk membuat formulir yang dapat diisi oleh pengguna. Ini membantu dalam validasi dan pengelolaan data formulir.
+
+```IconButton``: Widget ini digunakan untuk menampilkan tombol ikon di app bar. Dalam kasus ini, Anda menggunakan ikon panah kembali (Icons.arrow_back) yang, ketika ditekan, akan memicu fungsi untuk kembali ke halaman sebelumnya (Navigator.pop(context)).
+
+```Padding``: Widget ini digunakan untuk memberikan padding di sekitar konten lainnya, dalam hal ini di sekitar kolom yang menampilkan detail produk.
+
+```Column``: Widget ini digunakan untuk menata beberapa widget lainnya secara vertikal. Ini digunakan untuk menampilkan informasi detail produk.
+
+```Text``: Widget ini digunakan untuk menampilkan teks di layar. Dalam hal ini, digunakan untuk menampilkan berbagai atribut dari item, seperti nama, jumlah, harga, deskripsi, dan kategori
+
+```TextFormField``: Widget ini digunakan untuk menerima input teks dari pengguna. Setiap TextFormField dikonfigurasi dengan dekorasi, validator, dan fungsi onChanged.
+
+```ElevatedButton``: Widget ini digunakan untuk membuat tombol yang, ketika ditekan, akan menjalankan fungsi yang diberikan. Dalam kasus ini, tombol digunakan untuk mengirim data formulir ke server
+
+```Align``: Widget ini digunakan untuk mengatur posisi widget anaknya, dalam hal ini digunakan untuk menempatkan tombol di bagian bawah
+
+```SingleChildScrollView``: Widget ini memungkinkan pengguna untuk menggulir melalui konten yang mungkin tidak muat di layar
+
+```FutureBuilder``: Widget ini digunakan untuk membangun UI berdasarkan hasil dari Future. Dalam kasus ini, digunakan untuk membangun UI setelah data dari fetchItem() diperoleh
+
+```ListView.builder``: Widget ini digunakan untuk membuat daftar item yang dapat digulir. Ini membangun item daftar secara dinamis berdasarkan data yang diperoleh
+
+```InkWell``: Widget ini digunakan untuk menangani ketukan pada item daftar. Ketika item ditekan, ia akan menavigasi ke DetailProductPage dengan data item yang relevan
+
+```Container``: Widget ini digunakan untuk mengelompokkan dan memberikan margin, padding, dan tata letak lainnya pada item daftar
+
+```SizedBox``: Widget ini digunakan untuk memberikan jarak antar widget dalam Column.
+
+```ShopCard```: Widget ini, yang tampaknya merupakan widget kustom, digunakan untuk menampilkan kartu untuk setiap item dalam grid. Setiap ShopCard mewakili sebuah item dalam aplikasi
+
+## Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step
+
+
+
+
+
 
 
 
