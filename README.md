@@ -410,9 +410,264 @@ Di sisi aplikasi Flutter, respons dari Django diolah. Jika proses autentikasi su
 
 ```SizedBox``: Widget ini digunakan untuk memberikan jarak antar widget dalam Column.
 
-```ShopCard```: Widget ini, yang tampaknya merupakan widget kustom, digunakan untuk menampilkan kartu untuk setiap item dalam grid. Setiap ShopCard mewakili sebuah item dalam aplikasi
+```ShopCard```: Widget ini adalah  widget kustom, digunakan untuk menampilkan kartu untuk setiap item dalam grid. Setiap ShopCard mewakili sebuah item dalam aplikasi
+
+```LeftDrawer``: Widget adalah widget kustom, digunakan untuk menampilkan menu drawer di sisi kiri layar.
+
+```Drawer``: Widget ini digunakan untuk membuat menu drawer yang dapat ditarik dari sisi layar. Ini memberikan navigasi tambahan dalam aplikasi
+
+```ListView``: Widget ini digunakan untuk membuat daftar item yang dapat discroll. Dalam konteks ini, digunakan untuk menampilkan item-item dalam drawer.
+
+```ListTile``: Widget ini digunakan untuk membuat item yang dapat diklik di dalam ListView. Dalam hal ini, digunakan untuk membuat item navigasi di drawer
+
+```Icon``: Widget ini digunakan untuk menampilkan ikon di samping teks dalam ListTile
+
+```Material``: Widget ini digunakan sebagai dasar untuk menampilkan komponen UI yang mengikuti Material Design. Di sini, digunakan untuk memberikan warna latar belakang pada kartu
 
 ## Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step
+
+### :white_check_mark: Membuat halaman login pada proyek tugas flutter
+
+Pada bagian ini, saya mulai dengan membuat sebuah aplikasi baru bernama ```authentication``` pada projek Django saya. Kemudian, saya membuat fungsi ```login``` pada ```authentication/views.py```. Sebelum itu, saya juga menambahkan ```corsheaders``` yang sudah saya install ke ```settings.py```. Lalu, saya melakukan routing pada ```urls.py```. 
+
+Selanjutnya, pada proyek flutter, saya membuat file baru bernama ```login.dart``` dalam folder ```screens``` yang memuat widget untuk login ke aplikasi dengan menambahkan provider terlebih dahulu. Saya mengisi bagian ```login,dart``` saya dengan kode berikut
+
+```
+import 'package:glowventory/screens/menu.dart';
+import 'package:flutter/material.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
+
+void main() {
+    runApp(const LoginApp());
+}
+
+class LoginApp extends StatelessWidget {
+const LoginApp({super.key});
+
+@override
+Widget build(BuildContext context) {
+    return MaterialApp(
+        title: 'Login',
+        theme: ThemeData(
+            primarySwatch: Colors.blue,
+    ),
+    home: const LoginPage(),
+    );
+    }
+}
+
+class LoginPage extends StatefulWidget {
+    const LoginPage({super.key});
+
+    @override
+    _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+    final TextEditingController _usernameController = TextEditingController();
+    final TextEditingController _passwordController = TextEditingController();
+
+    @override
+    Widget build(BuildContext context) {
+        final request = context.watch<CookieRequest>();
+        return Scaffold(
+            appBar: AppBar(
+                title: const Text('Login'),
+            ),
+            body: Container(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                        TextField(
+                            controller: _usernameController,
+                            decoration: const InputDecoration(
+                                labelText: 'Username',
+                            ),
+                        ),
+                        const SizedBox(height: 12.0),
+                        TextField(
+                            controller: _passwordController,
+                            decoration: const InputDecoration(
+                                labelText: 'Password',
+                            ),
+                            obscureText: true,
+                        ),
+                        const SizedBox(height: 24.0),
+                        ElevatedButton(
+                            onPressed: () async {
+                                String username = _usernameController.text;
+                                String password = _passwordController.text;
+
+                                // Cek kredensial
+                                // TODO: Ganti URL dan jangan lupa tambahkan trailing slash (/) di akhir URL!
+                                // Untuk menyambungkan Android emulator dengan Django pada localhost,
+                                // gunakan URL http://10.0.2.2/
+                                final response = await request.login("http://127.0.0.1:8000/auth/login/", {
+                                'username': username,
+                                'password': password,
+                                });
+                    
+                                if (request.loggedIn) {
+                                    String message = response['message'];
+                                    String uname = response['username'];
+                                    Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => MyHomePage()),
+                                    );
+                                    ScaffoldMessenger.of(context)
+                                        ..hideCurrentSnackBar()
+                                        ..showSnackBar(
+                                            SnackBar(content: Text("$message Selamat datang, $uname.")));
+                                    } else {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) => AlertDialog(
+                                            title: const Text('Login Gagal'),
+                                            content:
+                                                Text(response['message']),
+                                            actions: [
+                                                TextButton(
+                                                    child: const Text('OK'),
+                                                    onPressed: () {
+                                                        Navigator.pop(context);
+                                                    },
+                                                ),
+                                            ],
+                                        ),
+                                    );
+                                }
+                            },
+                            child: const Text('Login'),
+                        ),
+                    ],
+                ),
+            ),
+        );
+    }
+}
+```
+
+Dan untuk mengintegrasikan loginpage saya ke main, saya mengubah kode ```main.dart``` menjadi seperti berikut
+
+```
+child: MaterialApp(
+ title: 'Flutter App',
+ theme: ThemeData(
+     colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
+     useMaterial3: true,
+ ),
+ home: LoginPage()),
+```
+
+### :white_check_mark: Mengintegrasikan sistem autentikasi Django dengan proyek tugas Flutter
+
+Langkah pertama saya adalah menginstall provider pada proyek Django dengan menjalankan perintah
+```
+flutter pub add provider
+flutter pub add pbp_django_auth
+```
+
+Setelah itu, saya mengubah kode pada ```main.dart``` agar bisa mengakses package provider dengan menyediakan ```CookieRequest``` library ke semua child widgets dengan menggunakan ```Provider```.
+
+```
+class MyApp extends StatelessWidget {
+ const MyApp({Key? key}) : super(key: key);
+
+ @override
+ Widget build(BuildContext context) {
+     return Provider(
+         create: (_) {
+             CookieRequest request = CookieRequest();
+             return request;
+         },
+         child: MaterialApp(
+             title: 'Flutter App',
+             theme: ThemeData(
+                 colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
+                 useMaterial3: true,
+             ),
+             home: LoginPage()),
+            );
+    }
+}
+```
+
+### :white_check_mark:Membuat halaman yang berisi daftar semua item yang terdapat pada endpoint JSON di Django yang telah kamu deploy
+
+Checklist ini saya mulai dengan menambahkan gile baru
+
+Pada bgaian ini, saya mengcopy data JSON dan paste di Quicktype. Setelah itu saya membuat folder baru dalam ```lib``` dengan nama ```models``` dan membuat file baru bernama ```item.dart``` mengikuti tugas Django saya. Kemudian saya mengcopy hasil kode dari Quicktype dan saya paste untuk membuat model pada flutter.
+
+### :white_check_mark: Membuat halaman detail untuk setiap item yang terdapat pada halaman daftar Item.
+
+Untuk membuat halaman detail yang menunjukkan nama, amount, dan deskripsi produk, saya membuat file baru bernama ```list_product.dart```. Sebelum itu saya menambahkan package HTTP untuk menlakukan perintah HTTP request. Kemudian, pada ```list_product.dart``` saya imprt library menambahkan kode yang menampilkan nama, amount, dan deskripsi produk dengan kode berikut
+
+```
+import 'package:flutter/material.dart';
+import 'package:glowventory/screens/detail_product.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:glowventory/models/item.dart';
+import 'package:glowventory/widgets/left_drawer.dart';
+
+class ItemPage extends StatefulWidget {
+    const ItemPage({Key? key}) : super(key: key);
+
+    @override
+    _ItemPageState createState() => _ItemPageState();
+}
+
+class _ItemPageState extends State<ItemPage> {
+Future<List<Item>> fetchItem() async {
+    var url = Uri.parse(
+        'http://127.0.0.1:8000/json/');
+    var response = await http.get(
+        url,
+        headers: {"Content-Type": "application/json"},
+    );
+
+    // melakukan decode response menjadi bentuk json
+    var data = jsonDecode(utf8.decode(response.bodyBytes));
+
+    // melakukan konversi data json menjadi object Item
+    List<Item> list_item = [];
+    for (var d in data) {
+        if (d != null) {
+            list_item.add(Item.fromJson(d));
+        }
+    }
+    return list_item;
+}
+...
+}
+```
+### :white_check_mark: Membuat halaman detail untuk setiap item yang terdapat pada halaman daftar Item.
+
+Untuk membuat halaman ini, saya membuat file baru pada ```screens``` dengan nama ```detail_product.dart``` dan saya tambahkan kode untuk memunculkan keseluruhan model yang saya miliki.
+
+Kemudian, untuk mengintegrasikannya, saya menambahkan Widget Inkwell pada ```list_product.dart```. Inkwell akan mendirect ketika user menekan product ke page ```detail_product.dart``` dengan kode ini
+
+```
+  itemBuilder: (_, index) {
+    var item = snapshot.data![index];
+
+    return InkWell(
+      onTap: (){
+        Navigator.push(
+          context, 
+          MaterialPageRoute(
+            builder: (context) =>
+            DetailProductPage(item: item),
+          ),
+        );
+      },
+    ....
+```
+
+
+
 
 
 
