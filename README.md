@@ -380,49 +380,49 @@ Di sisi aplikasi Flutter, respons dari Django diolah. Jika proses autentikasi su
 
 ```Scaffold```: Widget ini digunakan sebagai kerangka dasar untuk layout halaman di Flutter. Ini menyediakan struktur dasar seperti appBar, body, dan lainnya.
 
-```AppBar``: Widget ini digunakan untuk menampilkan app bar di bagian atas layar. Di dalamnya, Anda menampilkan judul halaman yang diambil dari data item.
+```AppBar```: Widget ini digunakan untuk menampilkan app bar di bagian atas layar. Di dalamnya, Anda menampilkan judul halaman yang diambil dari data item.
 
-```Form``: Widget ini digunakan untuk membuat formulir yang dapat diisi oleh pengguna. Ini membantu dalam validasi dan pengelolaan data formulir.
+```Form```: Widget ini digunakan untuk membuat formulir yang dapat diisi oleh pengguna. Ini membantu dalam validasi dan pengelolaan data formulir.
 
-```IconButton``: Widget ini digunakan untuk menampilkan tombol ikon di app bar. Dalam kasus ini, Anda menggunakan ikon panah kembali (Icons.arrow_back) yang, ketika ditekan, akan memicu fungsi untuk kembali ke halaman sebelumnya (Navigator.pop(context)).
+```IconButton```: Widget ini digunakan untuk menampilkan tombol ikon di app bar. Dalam kasus ini, Anda menggunakan ikon panah kembali (Icons.arrow_back) yang, ketika ditekan, akan memicu fungsi untuk kembali ke halaman sebelumnya (Navigator.pop(context)).
 
-```Padding``: Widget ini digunakan untuk memberikan padding di sekitar konten lainnya, dalam hal ini di sekitar kolom yang menampilkan detail produk.
+```Padding```: Widget ini digunakan untuk memberikan padding di sekitar konten lainnya, dalam hal ini di sekitar kolom yang menampilkan detail produk.
 
-```Column``: Widget ini digunakan untuk menata beberapa widget lainnya secara vertikal. Ini digunakan untuk menampilkan informasi detail produk.
+```Column```: Widget ini digunakan untuk menata beberapa widget lainnya secara vertikal. Ini digunakan untuk menampilkan informasi detail produk.
 
-```Text``: Widget ini digunakan untuk menampilkan teks di layar. Dalam hal ini, digunakan untuk menampilkan berbagai atribut dari item, seperti nama, jumlah, harga, deskripsi, dan kategori
+```Text```: Widget ini digunakan untuk menampilkan teks di layar. Dalam hal ini, digunakan untuk menampilkan berbagai atribut dari item, seperti nama, jumlah, harga, deskripsi, dan kategori
 
-```TextFormField``: Widget ini digunakan untuk menerima input teks dari pengguna. Setiap TextFormField dikonfigurasi dengan dekorasi, validator, dan fungsi onChanged.
+```TextFormField```: Widget ini digunakan untuk menerima input teks dari pengguna. Setiap TextFormField dikonfigurasi dengan dekorasi, validator, dan fungsi onChanged.
 
-```ElevatedButton``: Widget ini digunakan untuk membuat tombol yang, ketika ditekan, akan menjalankan fungsi yang diberikan. Dalam kasus ini, tombol digunakan untuk mengirim data formulir ke server
+```ElevatedButton```: Widget ini digunakan untuk membuat tombol yang, ketika ditekan, akan menjalankan fungsi yang diberikan. Dalam kasus ini, tombol digunakan untuk mengirim data formulir ke server
 
-```Align``: Widget ini digunakan untuk mengatur posisi widget anaknya, dalam hal ini digunakan untuk menempatkan tombol di bagian bawah
+```Align```: Widget ini digunakan untuk mengatur posisi widget anaknya, dalam hal ini digunakan untuk menempatkan tombol di bagian bawah
 
-```SingleChildScrollView``: Widget ini memungkinkan pengguna untuk menggulir melalui konten yang mungkin tidak muat di layar
+```SingleChildScrollView```: Widget ini memungkinkan pengguna untuk menggulir melalui konten yang mungkin tidak muat di layar
 
-```FutureBuilder``: Widget ini digunakan untuk membangun UI berdasarkan hasil dari Future. Dalam kasus ini, digunakan untuk membangun UI setelah data dari fetchItem() diperoleh
+```FutureBuilder```: Widget ini digunakan untuk membangun UI berdasarkan hasil dari Future. Dalam kasus ini, digunakan untuk membangun UI setelah data dari fetchItem() diperoleh
 
-```ListView.builder``: Widget ini digunakan untuk membuat daftar item yang dapat digulir. Ini membangun item daftar secara dinamis berdasarkan data yang diperoleh
+```ListView.builder```: Widget ini digunakan untuk membuat daftar item yang dapat digulir. Ini membangun item daftar secara dinamis berdasarkan data yang diperoleh
 
-```InkWell``: Widget ini digunakan untuk menangani ketukan pada item daftar. Ketika item ditekan, ia akan menavigasi ke DetailProductPage dengan data item yang relevan
+```InkWell```: Widget ini digunakan untuk menangani ketukan pada item daftar. Ketika item ditekan, ia akan menavigasi ke DetailProductPage dengan data item yang relevan
 
-```Container``: Widget ini digunakan untuk mengelompokkan dan memberikan margin, padding, dan tata letak lainnya pada item daftar
+```Container```: Widget ini digunakan untuk mengelompokkan dan memberikan margin, padding, dan tata letak lainnya pada item daftar
 
-```SizedBox``: Widget ini digunakan untuk memberikan jarak antar widget dalam Column.
+```SizedBox```: Widget ini digunakan untuk memberikan jarak antar widget dalam Column.
 
 ```ShopCard```: Widget ini adalah  widget kustom, digunakan untuk menampilkan kartu untuk setiap item dalam grid. Setiap ShopCard mewakili sebuah item dalam aplikasi
 
-```LeftDrawer``: Widget adalah widget kustom, digunakan untuk menampilkan menu drawer di sisi kiri layar.
+```LeftDrawer```: Widget adalah widget kustom, digunakan untuk menampilkan menu drawer di sisi kiri layar.
 
-```Drawer``: Widget ini digunakan untuk membuat menu drawer yang dapat ditarik dari sisi layar. Ini memberikan navigasi tambahan dalam aplikasi
+```Drawer```: Widget ini digunakan untuk membuat menu drawer yang dapat ditarik dari sisi layar. Ini memberikan navigasi tambahan dalam aplikasi
 
-```ListView``: Widget ini digunakan untuk membuat daftar item yang dapat discroll. Dalam konteks ini, digunakan untuk menampilkan item-item dalam drawer.
+```ListView```: Widget ini digunakan untuk membuat daftar item yang dapat discroll. Dalam konteks ini, digunakan untuk menampilkan item-item dalam drawer.
 
-```ListTile``: Widget ini digunakan untuk membuat item yang dapat diklik di dalam ListView. Dalam hal ini, digunakan untuk membuat item navigasi di drawer
+```ListTile```: Widget ini digunakan untuk membuat item yang dapat diklik di dalam ListView. Dalam hal ini, digunakan untuk membuat item navigasi di drawer
 
-```Icon``: Widget ini digunakan untuk menampilkan ikon di samping teks dalam ListTile
+```Icon```: Widget ini digunakan untuk menampilkan ikon di samping teks dalam ListTile
 
-```Material``: Widget ini digunakan sebagai dasar untuk menampilkan komponen UI yang mengikuti Material Design. Di sini, digunakan untuk memberikan warna latar belakang pada kartu
+```Material```: Widget ini digunakan sebagai dasar untuk menampilkan komponen UI yang mengikuti Material Design. Di sini, digunakan untuk memberikan warna latar belakang pada kartu
 
 ## Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step
 
