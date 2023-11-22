@@ -596,11 +596,9 @@ class MyApp extends StatelessWidget {
 
 ### :white_check_mark:Membuat halaman yang berisi daftar semua item yang terdapat pada endpoint JSON di Django yang telah kamu deploy
 
-Checklist ini saya mulai dengan menambahkan gile baru
+Checklist ini saya mulai dengan menambahkan file baru
 
-Pada bgaian ini, saya mengcopy data JSON dan paste di Quicktype. Setelah itu saya membuat folder baru dalam ```lib``` dengan nama ```models``` dan membuat file baru bernama ```item.dart``` mengikuti tugas Django saya. Kemudian saya mengcopy hasil kode dari Quicktype dan saya paste untuk membuat model pada flutter.
-
-### :white_check_mark: Membuat halaman detail untuk setiap item yang terdapat pada halaman daftar Item.
+Pada bagian ini, saya mengcopy data JSON dan paste di Quicktype. Setelah itu saya membuat folder baru dalam ```lib``` dengan nama ```models``` dan membuat file baru bernama ```item.dart``` mengikuti tugas Django saya. Kemudian saya mengcopy hasil kode dari Quicktype dan saya paste untuk membuat model pada flutter. 
 
 Untuk membuat halaman detail yang menunjukkan nama, amount, dan deskripsi produk, saya membuat file baru bernama ```list_product.dart```. Sebelum itu saya menambahkan package HTTP untuk menlakukan perintah HTTP request. Kemudian, pada ```list_product.dart``` saya imprt library menambahkan kode yang menampilkan nama, amount, dan deskripsi produk dengan kode berikut
 
